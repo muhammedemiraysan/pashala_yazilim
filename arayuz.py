@@ -14,7 +14,7 @@ class MainWindow(QWidget):
         self.timer.setInterval(10) # in milliseconds, so 5000 = 5 seconds
         self.timer.timeout.connect(self.loop)
         self.timer.start()
-        self.resize(700, 700)
+        self.resize(1000, 700)
         self.VBL = QVBoxLayout()
 
         self.FeedLabel = QLabel()
@@ -30,13 +30,13 @@ class MainWindow(QWidget):
         self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
         self.setLayout(self.VBL)
         self.port_secim_label = QtWidgets.QLabel(self)
-        self.port_secim_label.setGeometry(QtCore.QRect(460, 50, 31, 20))
+        self.port_secim_label.setGeometry(QtCore.QRect(815, 50, 31, 20))
         self.port_secim_label.setObjectName("port_secim_label")
         self.Baudrate_label = QtWidgets.QLabel(self)
-        self.Baudrate_label.setGeometry(QtCore.QRect(430, 80, 101, 20))
+        self.Baudrate_label.setGeometry(QtCore.QRect(815, 80, 101, 20))
         self.Baudrate_label.setObjectName("Baudrate_label")
         self.port_secim_ComboBox = QtWidgets.QComboBox(self)
-        self.port_secim_ComboBox.setGeometry(QtCore.QRect(490, 80, 69, 22))
+        self.port_secim_ComboBox.setGeometry(QtCore.QRect(875, 80, 69, 22))
         self.port_secim_ComboBox.setObjectName("port_secim_ComboBox")
         self.port_secim_ComboBox.addItem("")
         self.port_secim_ComboBox.addItem("")
@@ -48,7 +48,7 @@ class MainWindow(QWidget):
         self.port_secim_ComboBox.addItem("")
         self.port_secim_ComboBox.addItem("")
         self.Baudrate_ComboBox = QtWidgets.QComboBox(self)
-        self.Baudrate_ComboBox.setGeometry(QtCore.QRect(490, 50, 69, 22))
+        self.Baudrate_ComboBox.setGeometry(QtCore.QRect(875, 50, 69, 22))
         self.Baudrate_ComboBox.setObjectName("Baudrate_ComboBox")
         self.Baudrate_ComboBox.addItem("")
         self.Baudrate_ComboBox.addItem("")
@@ -66,16 +66,28 @@ class MainWindow(QWidget):
         self.Baudrate_ComboBox.addItem("")
         self.Baudrate_ComboBox.addItem("")
         self.baglan_buton = QtWidgets.QPushButton(self)
-        self.baglan_buton.setGeometry(QtCore.QRect(490, 120, 75, 23))
+        self.baglan_buton.setGeometry(QtCore.QRect(875, 120, 75, 23))
         self.baglan_buton.setObjectName("baglan_buton")
         self.baglan_buton.clicked.connect(self.baglan)
-        self.baglan_label = QtWidgets.QLabel(self)
-        self.baglan_label.setGeometry(QtCore.QRect(490, 140, 91, 20))
-        self.baglan_label.setObjectName("baglan_label")
+
         self.label = QtWidgets.QLabel(self)
-        self.label.setGeometry(QtCore.QRect(450, 450, 251, 251))
+        self.label.setGeometry(QtCore.QRect(749, 230, 251, 251))
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("pashala logo tasarım 1 (5).png"))
+        self.baglan_label = QtWidgets.QLabel(self)
+        self.baglan_label.setGeometry(QtCore.QRect(875, 140, 91, 20))
+        self.baglan_label.setObjectName("baglan_label")
+        self.baglan_label.setText("Bağlantı Bekleniyor")
+        self.baglan_label2 = QtWidgets.QLabel(self)
+        self.baglan_label2.setGeometry(QtCore.QRect(875, 140, 91, 20))
+        self.baglan_label2.setObjectName("baglan_label2")
+        self.baglan_label2.setText("Bağlantı Başarılı")
+        self.baglan_label2.setHidden(True)
+        self.baglan_label3 = QtWidgets.QLabel(self)
+        self.baglan_label3.setGeometry(QtCore.QRect(875, 140, 91, 20))
+        self.baglan_label3.setObjectName("baglan_label3")
+        self.baglan_label3.setText("Bağlantı Başarısız")
+        self.baglan_label3.setHidden(True)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self)
         self.label_2.setGeometry(QtCore.QRect(150, 70, 231, 271))
@@ -111,7 +123,7 @@ class MainWindow(QWidget):
         self.port_secim_ComboBox.setItemText(13, _translate("Dialog", "COM14"))
         self.port_secim_ComboBox.setItemText(14, _translate("Dialog", "COM15"))
         self.baglan_buton.setText(_translate("Dialog", "Bağlan"))
-        self.baglan_label.setText("Bağlantı Bekleniyor")
+        
         
     def ImageUpdateSlot(self, Image):
         self.FeedLabel.setPixmap(QPixmap.fromImage(Image))
@@ -137,7 +149,15 @@ class MainWindow(QWidget):
     def CancelFeed(self):
         exit()
     def baglan(self, Dialog):
-        self.arduino = serial.Serial(port=str(self.port_secim_ComboBox.currentText()),baudrate = int(self.Baudrate_ComboBox.currentText()))
+        try:
+            self.arduino = serial.Serial(port=str(self.port_secim_ComboBox.currentText()),baudrate = int(self.Baudrate_ComboBox.currentText()))
+            self.baglan_label.setHidden(True)
+            self.baglan_label2.setHidden(False)
+            self.baglan_label3.setHidden(True)
+        except:
+            self.baglan_label.setHidden(True)
+            self.baglan_label2.setHidden(True)
+            self.baglan_label3.setHidden(False)
     def loop(self):
         pass
 class Worker1(QThread):
@@ -151,7 +171,7 @@ class Worker1(QThread):
                 Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 FlippedImage = cv2.flip(Image, 1)
                 ConvertToQtFormat = QImage(FlippedImage.data, FlippedImage.shape[1], FlippedImage.shape[0], QImage.Format_RGB888)
-                Pic = ConvertToQtFormat.scaled(400, 400, Qt.KeepAspectRatio)
+                Pic = ConvertToQtFormat.scaled(700, 700, Qt.KeepAspectRatio)
                 self.ImageUpdate.emit(Pic)
     def stop(self):
         self.ThreadActive = False
