@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 class MainWindow(QWidget):
+
     def __init__(self):
 
         super(MainWindow, self).__init__()
@@ -67,6 +68,7 @@ class MainWindow(QWidget):
         self.baglan_buton = QtWidgets.QPushButton(self)
         self.baglan_buton.setGeometry(QtCore.QRect(490, 120, 75, 23))
         self.baglan_buton.setObjectName("baglan_buton")
+        self.baglan_buton.clicked.connect(self.baglan)
         self.baglan_label = QtWidgets.QLabel(self)
         self.baglan_label.setGeometry(QtCore.QRect(490, 140, 91, 20))
         self.baglan_label.setObjectName("baglan_label")
@@ -123,6 +125,8 @@ class MainWindow(QWidget):
             print("D") 
     def CancelFeed(self):
         exit()
+    def baglan(self):
+        print("bağlan")
     def loop(self):
         print(self.Baudrate_ComboBox.currentText())
         print(self.port_secim_ComboBox.currentText())
