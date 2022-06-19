@@ -112,11 +112,19 @@ class MainWindow(QWidget):
         self.baglan_label.setText(_translate("Dialog", "Bağlantı Bekleniyor"))
     def ImageUpdateSlot(self, Image):
         self.FeedLabel.setPixmap(QPixmap.fromImage(Image))
-
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_W:
+            print("W")
+        elif event.key() == Qt.Key_S:
+            print("S")
+        elif event.key() == Qt.Key_A:
+            print("A")
+        elif event.key() == Qt.Key_D:
+            print("D") 
     def CancelFeed(self):
         exit()
     def loop(self):
-        print("hihihiha")
+        pass
 class Worker1(QThread):
     ImageUpdate = pyqtSignal(QImage)
     def run(self):
