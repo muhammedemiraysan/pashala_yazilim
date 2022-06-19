@@ -128,11 +128,16 @@ class MainWindow(QWidget):
         elif event.key() == Qt.Key_D:
             print("D")
             self.arduino.write(b'4')
+        elif event.key() == Qt.Key_Q:
+            print("Q")
+            self.arduino.write(b'5')
+        elif event.key() == Qt.Key_E:
+            print("E")
+            self.arduino.write(b'6')
     def CancelFeed(self):
         exit()
     def baglan(self, Dialog):
-        self.arduino = serial.Serial(port="COM7",baudrate = 9600)
-
+        self.arduino = serial.Serial(port=str(self.port_secim_ComboBox.currentText()),baudrate = int(self.Baudrate_ComboBox.currentText()))
     def loop(self):
         pass
 class Worker1(QThread):
