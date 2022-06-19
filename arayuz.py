@@ -3,11 +3,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import cv2
+import serial
 from PyQt5 import QtCore, QtGui, QtWidgets
 class MainWindow(QWidget):
 
     def __init__(self):
-
         super(MainWindow, self).__init__()
         self.timer = QTimer(self)
         self.timer.setSingleShot(False)
@@ -111,25 +111,30 @@ class MainWindow(QWidget):
         self.port_secim_ComboBox.setItemText(13, _translate("Dialog", "COM14"))
         self.port_secim_ComboBox.setItemText(14, _translate("Dialog", "COM15"))
         self.baglan_buton.setText(_translate("Dialog", "Bağlan"))
-        self.baglan_label.setText(_translate("Dialog", "Bağlantı Bekleniyor"))
+        self.baglan_label.setText("Bağlantı Bekleniyor")
+        
     def ImageUpdateSlot(self, Image):
         self.FeedLabel.setPixmap(QPixmap.fromImage(Image))
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_W:
             print("W")
+            self.arduino.write(b'1')
         elif event.key() == Qt.Key_S:
             print("S")
+            self.arduino.write(b'2')
         elif event.key() == Qt.Key_A:
             print("A")
+            self.arduino.write(b'3')
         elif event.key() == Qt.Key_D:
-            print("D") 
+            print("D")
+            self.arduino.write(b'4')
     def CancelFeed(self):
         exit()
-    def baglan(self):
-        print("bağlan")
+    def baglan(self, Dialog):
+        self.arduino = serial.Serial(port="COM7",baudrate = 9600)
+
     def loop(self):
-        print(self.Baudrate_ComboBox.currentText())
-        print(self.port_secim_ComboBox.currentText())
+        pass
 class Worker1(QThread):
     ImageUpdate = pyqtSignal(QImage)
     def run(self):
